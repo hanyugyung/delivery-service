@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class UserTest {
 
     @Test
-    void 테스트_User엔티티_생성() {
+    void 테스트_User_엔티티_생성() {
 
         // given
         String userId = "userId" + UUID.randomUUID().toString().substring(0, 5);
