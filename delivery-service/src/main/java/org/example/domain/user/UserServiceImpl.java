@@ -24,8 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long signUp(UserCommand.UserSignUp command) {
+    public UserInfo.UserSignUp signUp(UserCommand.UserSignUp command) {
         checkAvailableUserId(command.getUserId());
-        return userRepository.save(command.toEntity()).getId();
+        return UserInfo.UserSignUp
+                .of(userRepository.save(command.toEntity()).getId());
     }
 }

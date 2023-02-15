@@ -29,7 +29,7 @@ class UserServiceTest {
                 = new UserCommand.UserSignUp(userId, password, userName);
 
         // when
-        Long user = userService.signUp(command);
+        UserInfo.UserSignUp user = userService.signUp(command);
 
         // then
         assertNotNull(user);
@@ -44,10 +44,6 @@ class UserServiceTest {
         String userName = "userName";
         UserCommand.UserSignUp command
                 = new UserCommand.UserSignUp(userId, password, userName);
-
-        Long user = userService.signUp(command);
-
-        assertNotNull(user);
 
         // when, then
         assertThrows(InvalidParamException.class,

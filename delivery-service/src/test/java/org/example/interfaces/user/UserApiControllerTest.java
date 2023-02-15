@@ -11,6 +11,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,7 +45,7 @@ class UserApiControllerTest {
                 = new ParameterizedTypeReference<>() {};
 
         UserApiDto.UserSignUpResponse response = client.post()
-                .uri("/user/sing-up")
+                .uri("/sing-up")
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
@@ -75,7 +76,7 @@ class UserApiControllerTest {
                 = new ParameterizedTypeReference<>() {};
 
         CommonResponse response = client.post()
-                .uri("/user/sing-up")
+                .uri("/sing-up")
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
@@ -86,7 +87,7 @@ class UserApiControllerTest {
 
         // then
         assertNotNull(response);
-        assertNotNull(response.getErrorMessage());
+        assertEquals(CommonResponse.Result.FAIL, response.getResult());
     }
 
     private UserApiDto.UserSignUpRequest getRequest(String userId, String password, String userName) {

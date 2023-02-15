@@ -14,7 +14,7 @@ public class CommonResponse<T> {
 
     private Result result;
     private T data;
-    private CustomErrorMessage errorMessage;
+    private String errorMessage;
 
     public static <T> CommonResponse<T> success(T data) {
         return (CommonResponse<T>) CommonResponse.builder()
@@ -24,6 +24,13 @@ public class CommonResponse<T> {
     }
 
     public static CommonResponse fail(CustomErrorMessage errorMessage) {
+        return CommonResponse.builder()
+                .result(Result.FAIL)
+                .errorMessage(errorMessage.getErrorMessage())
+                .build();
+    }
+
+    public static CommonResponse fail(String errorMessage) {
         return CommonResponse.builder()
                 .result(Result.FAIL)
                 .errorMessage(errorMessage)
