@@ -11,10 +11,10 @@ public class UserCommand {
     @AllArgsConstructor
     public static class UserSignUp {
         private String userId;
-        private String encryptedPassword;
+        private String password;
         private String userName;
 
-        public User toEntity() {
+        public User toEntity(String encryptedPassword) {
             return new User(userId, encryptedPassword, userName);
         }
     }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.security.InvalidParameterException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -47,7 +48,7 @@ class UserServiceTest {
         assertNotNull(user);
 
         // when, then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidParameterException.class,
                 () -> userService.signUp(command));
     }
 

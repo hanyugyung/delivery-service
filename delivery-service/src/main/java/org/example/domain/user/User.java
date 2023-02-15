@@ -2,17 +2,14 @@ package org.example.domain.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.domain.Base;
 import org.springframework.util.StringUtils;
 
 @Entity
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User extends Base {
 
     private String userId;
 
