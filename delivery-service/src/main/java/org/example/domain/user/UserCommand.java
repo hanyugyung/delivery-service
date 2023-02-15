@@ -11,7 +11,11 @@ public class UserCommand {
     @AllArgsConstructor
     public static class UserSignUp {
         private String userId;
-        private String password;
+        private String encryptedPassword;
         private String userName;
+
+        public User toEntity() {
+            return new User(userId, encryptedPassword, userName);
+        }
     }
 }
