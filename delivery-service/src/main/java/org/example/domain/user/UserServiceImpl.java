@@ -11,21 +11,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private boolean checkAvailableUserId(String userId) {
-        return true;
+    private void checkAvailableUserId(String userId) {
+        userRepository.findByUserId(userId)
+                .ifPresent(it -> {
+                    throw new InvalidParamException(CustomErrorMessage.USER_ID_ALREADY_EXISTED);
+                });
     }
 
     @Override
     @Transactional
     public Long signUp(UserCommand.UserSignUp command) {
-        if(!checkAvailableUserId(command.getUserId())) {
-            throw new InvalidParamException(CustomErrorMessage.USER_ID_ALREADY_EXISTED);
-        }
-
-        return userRepository.save(command.toEntity("")).getId();
+        checkAvailableUserId(command.getUserId());
+        return userRepository.save(command.toEntity()).getId();
     }
 }

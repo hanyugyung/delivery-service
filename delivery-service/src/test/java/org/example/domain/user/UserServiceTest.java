@@ -1,16 +1,18 @@
 package org.example.domain.user;
 
+import org.example.common.exception.InvalidParamException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.security.InvalidParameterException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class UserServiceTest {
 
     @Autowired
@@ -48,7 +50,7 @@ class UserServiceTest {
         assertNotNull(user);
 
         // when, then
-        assertThrows(InvalidParameterException.class,
+        assertThrows(InvalidParamException.class,
                 () -> userService.signUp(command));
     }
 
