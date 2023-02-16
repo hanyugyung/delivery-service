@@ -17,8 +17,7 @@ public class Delivery extends Base {
     /**
      * 어떤 주문에 대한 배달인지?
      */
-    @NotNull
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "orderId")
     private Order order;
 

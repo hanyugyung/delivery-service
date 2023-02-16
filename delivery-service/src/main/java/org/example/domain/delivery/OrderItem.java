@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import org.example.domain.Base;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "order-items")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderItem extends Base {

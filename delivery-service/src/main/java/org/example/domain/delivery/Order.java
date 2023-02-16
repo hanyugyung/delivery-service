@@ -23,6 +23,9 @@ public class Order extends Base {
     @NotNull
     private Long userId;
 
+    @OneToOne(mappedBy = "order")
+    private Delivery delivery;
+
     /**
      * 주문 상품 목록
      */
