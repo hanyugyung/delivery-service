@@ -1,4 +1,4 @@
-package org.example.interfaces.user;
+package org.example.interfaces;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

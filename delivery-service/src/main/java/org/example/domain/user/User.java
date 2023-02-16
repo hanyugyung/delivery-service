@@ -1,6 +1,7 @@
 package org.example.domain.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.example.domain.Base;
 import org.springframework.util.StringUtils;
@@ -11,10 +12,13 @@ import org.springframework.util.StringUtils;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class User extends Base {
 
+    @NotNull
     private String userId;
 
+    @NotNull
     private String encryptedPassword;
 
+    @NotNull
     private String userName;
 
     @Builder
