@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/user") // TODO 복수형으로 변경
 public class UserApiController {
 
     private final UserService userService;

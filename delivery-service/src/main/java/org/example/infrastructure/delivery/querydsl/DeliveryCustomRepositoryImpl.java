@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.example.domain.delivery.QDelivery.delivery;
 import static org.example.domain.delivery.QOrder.order;
+import static org.example.domain.delivery.QOrderItem.orderItem;
 
 @RequiredArgsConstructor
 public class DeliveryCustomRepositoryImpl implements DeliveryCustomRepository{
@@ -18,10 +19,16 @@ public class DeliveryCustomRepositoryImpl implements DeliveryCustomRepository{
 
     @Override
     public List<Delivery> getUserDeliveries(Long userId, ZonedDateTime start, ZonedDateTime end) {
-        return queryFactory.select(delivery)
-                .join(order)
+        List<Delivery> result = queryFactory.select(delivery)
+                .distinct()
+                .from(delivery)
+                .leftJoin(delivery.order, order)
                 .where(order.userId.eq(userId)
-                    .and(order.orderedAt.between(start, end)))
+                        .and(order.orderedAt.between(start, end)))
+                .fetchJoin()
+                .leftJoin(order.orderItemList, orderItem)
+                .fetchJoin()
                 .fetch();
+        return result;
     }
 }

@@ -1,5 +1,6 @@
 package org.example.domain.delivery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -37,8 +38,9 @@ public class OrderItem extends Base {
     private Integer count;
 
     @Builder
-    public OrderItem(Long itemId, Integer count) {
+    public OrderItem(Long itemId, Integer count, Order order) {
         this.itemId = itemId;
         this.count = count;
+        this.order = order;
     }
 }

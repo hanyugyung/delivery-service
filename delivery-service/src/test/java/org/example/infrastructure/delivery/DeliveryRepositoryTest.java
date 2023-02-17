@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -24,7 +27,7 @@ class DeliveryRepositoryTest {
 
         Long userId = 1L;
         ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime before = ZonedDateTime.now().minusDays(3);
+        ZonedDateTime before = LocalDate.now().minusDays(2).atStartOfDay(ZoneId.systemDefault());
         Order order = new Order(userId, ZonedDateTime.now().minusDays(1));
 
         Delivery delivery = Delivery.builder()

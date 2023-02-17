@@ -31,7 +31,7 @@ public class Order extends Base {
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.PERSIST)
     private final List<OrderItem> orderItemList
-            = List.of(new OrderItem(1L, 1), new OrderItem(2L, 1));
+            = List.of(new OrderItem(1L, 1, this), new OrderItem(2L, 1, this));
 
     /**
      * 주문 일시

@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public CommonResponse onException(Exception exception) {
-        log.error("exception={}", exception.getCause().getMessage());
+        log.error("exception={}", exception.getMessage());
         return CommonResponse.fail(exception.getMessage());
     }
 }
