@@ -30,12 +30,17 @@ public class DeliveryApiController {
         // TODO 인증된 사용자의 pk 로 변경
         Long userId = 2L;
 
-        ZonedDateTime before
-                = from == null ? LocalDate.now().minusDays(2).atStartOfDay(ZoneId.systemDefault()) : from.atZone(ZoneId.systemDefault());
+        ZonedDateTime limit = LocalDate.now().minusDays(2).atStartOfDay(ZoneId.systemDefault());
+        ZonedDateTime before;
 
-        if (from != null && from.isBefore(before.toLocalDateTime())) {
-            throw new InvalidParamException(CustomErrorMessage.DELIVERY_SEARCH_TERM_INVALID);
+        if(from == null) before = limit;
+        else {
+            before = from.atZone(ZoneId.systemDefault());
+            if(from.isBefore(limit.toLocalDateTime())) {
+                throw new InvalidParamException(CustomErrorMessage.DELIVERY_SEARCH_TERM_INVALID);
+            }
         }
+
 
         DeliveryApiDto.GetDeliveriesResponse response =
                 DeliveryApiDto.GetDeliveriesResponse
