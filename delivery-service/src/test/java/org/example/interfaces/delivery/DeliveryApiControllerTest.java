@@ -48,8 +48,7 @@ class DeliveryApiControllerTest {
         // given
         saveDelivery();
 
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime from = ZonedDateTime.now().minusDays(3);
+        ZonedDateTime from = ZonedDateTime.now().minusDays(2);
 
         // when
         ParameterizedTypeReference<CommonResponse<DeliveryApiDto.GetDeliveriesResponse>> ref
@@ -70,6 +69,31 @@ class DeliveryApiControllerTest {
         assertEquals(1, response.getList().size());
     }
 
+    @Test
+    void 테스트_사용자의_주문_배달_목록시_기간3일_초과() {
+
+        // given
+        saveDelivery();
+
+        ZonedDateTime from = ZonedDateTime.now().minusDays(3);
+
+        // when
+        ParameterizedTypeReference<CommonResponse<DeliveryApiDto.GetDeliveriesResponse>> ref
+                = new ParameterizedTypeReference<>() {};
+
+        CommonResponse response = client.get()
+                .uri(String.format("?from=%s", from.toLocalDateTime()))
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(ref)
+                .returnResult()
+                .getResponseBody();
+
+
+        // then
+        assertNotNull(response);
+        assertEquals(CommonResponse.Result.FAIL, response.getResult());
+    }
 
     private void saveDelivery() {
 
