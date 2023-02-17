@@ -1,15 +1,14 @@
 package org.example.interfaces.delivery;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.common.exception.CustomErrorMessage;
 import org.example.common.exception.InvalidParamException;
+import org.example.domain.delivery.DeliveryInfo;
 import org.example.domain.delivery.DeliveryService;
 import org.example.interfaces.CommonResponse;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,5 +41,18 @@ public class DeliveryApiController {
                 DeliveryApiDto.GetDeliveriesResponse
                         .of(deliveryService.getUserDeliveries(userId, before, ZonedDateTime.now()));
         return CommonResponse.success(response);
+    }
+
+    @PatchMapping("/{id}")
+    public CommonResponse<DeliveryInfo.PatchDelivery> patchDestination(
+            @PathVariable Long id
+            , @RequestBody @Valid DeliveryApiDto.PatchDeliveryRequest request
+    ) {
+        // TODO 인증된 사용자의 pk 로 변경
+        Long userId = 2L;
+
+        return CommonResponse.success(
+                deliveryService.patchDestination(id, userId, request.toCommand())
+        );
     }
 }

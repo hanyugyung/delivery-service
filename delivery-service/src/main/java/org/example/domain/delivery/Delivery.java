@@ -63,7 +63,7 @@ public class Delivery extends Base {
         this.memo = memo;
     }
 
-    void assignRider(Long rider) {
+    public void assignRider(Long rider) {
         if (this.status != Status.DELIVERY_PREPARE) {
             throw new InvalidParamException(CustomErrorMessage.DELIVERY_HAS_ALREADY_STARTED);
         }
@@ -71,18 +71,18 @@ public class Delivery extends Base {
         this.status = Status.ASSIGN_RIDER;
     }
 
-    void startDelivery() {
+    public void startDelivery() {
         if (this.status == Status.DELIVERY_COMPLETE) {
             throw new InvalidParamException(CustomErrorMessage.DELIVERY_STATUS_INVALID);
         }
         this.status = Status.IN_DELIVERY;
     }
 
-    void completeDelivery() {
+    public void completeDelivery() {
         this.status = Status.IN_DELIVERY;
     }
 
-    void changeDestination(String destination) {
+    public void changeDestination(String destination) {
         if (this.status != Status.DELIVERY_PREPARE) {
             throw new InvalidParamException(CustomErrorMessage.DELIVERY_HAS_ALREADY_STARTED);
         }
