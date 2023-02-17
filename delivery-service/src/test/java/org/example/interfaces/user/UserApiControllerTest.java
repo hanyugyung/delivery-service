@@ -1,5 +1,6 @@
 package org.example.interfaces.user;
 
+import org.example.interfaces.CommonResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

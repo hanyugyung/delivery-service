@@ -1,7 +1,7 @@
 package org.example.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.interfaces.user.CommonResponse;
+import org.example.interfaces.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public CommonResponse onException(Exception exception) {
-        log.error("exception={}", exception.getCause().getMessage());
+        log.error("exception={}", exception.getMessage());
         return CommonResponse.fail(exception.getMessage());
     }
 }

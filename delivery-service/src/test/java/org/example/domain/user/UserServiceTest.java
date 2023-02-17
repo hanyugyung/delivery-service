@@ -39,6 +39,14 @@ class UserServiceTest {
     void 테스트_사용자_회원가입_id중복_오류() {
 
         // given
+        String _userId = "userId";
+        String _password = "User1234!@#$";
+        String _userName = "userName";
+        UserCommand.UserSignUp _command
+                = new UserCommand.UserSignUp(_userId, _password, _userName);
+        userService.signUp(_command);
+
+
         String userId = "userId";
         String password = "User1234!@#$";
         String userName = "userName";
