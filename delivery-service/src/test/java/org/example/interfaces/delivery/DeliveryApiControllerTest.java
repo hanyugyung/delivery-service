@@ -7,7 +7,6 @@ import org.example.domain.user.UserInfo;
 import org.example.domain.user.UserService;
 import org.example.infrastructure.delivery.DeliveryRepository;
 import org.example.interfaces.CommonResponse;
-import org.example.interfaces.user.UserApiDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,7 +135,8 @@ class DeliveryApiControllerTest {
 
         // when
         ParameterizedTypeReference<CommonResponse<DeliveryApiDto.PatchDeliveryResponse>> ref
-                = new ParameterizedTypeReference<>() {};
+                = new ParameterizedTypeReference<>() {
+        };
 
         DeliveryApiDto.PatchDeliveryResponse response = client.patch()
                 .uri(String.format("/%d", delivery.getId()))
@@ -173,7 +173,8 @@ class DeliveryApiControllerTest {
 
         // when
         ParameterizedTypeReference<CommonResponse<DeliveryApiDto.PatchDeliveryResponse>> ref
-                = new ParameterizedTypeReference<>() {};
+                = new ParameterizedTypeReference<>() {
+        };
 
         DeliveryApiDto.PatchDeliveryResponse response = client.patch()
                 .uri(String.format("/%d", delivery.getId()))
@@ -191,6 +192,7 @@ class DeliveryApiControllerTest {
         assertNotNull(response);
         assertEquals(destination, response.getDestination());
     }
+
     private Delivery saveDelivery(Long userId) {
 
         Order order = new Order(userId, ZonedDateTime.now().minusDays(1));
