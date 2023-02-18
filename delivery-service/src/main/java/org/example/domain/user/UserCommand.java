@@ -27,4 +27,12 @@ public class UserCommand {
 //            return new User(userId, passwordEncoder.encode(password), userName);
         }
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class UserLogin {
+        private String userId;
+        private String password;
+    }
 }

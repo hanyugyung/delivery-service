@@ -15,4 +15,12 @@ public class UserInfo {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class UserLogin {
+        private String token;
+        public static UserInfo.UserLogin of(String token) {
+            return new UserInfo.UserLogin(token);
+        }
+    }
 }
