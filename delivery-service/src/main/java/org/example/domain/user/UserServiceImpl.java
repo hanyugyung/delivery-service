@@ -7,6 +7,7 @@ import org.example.common.auth.jwt.JwtGenerator;
 import org.example.common.exception.CustomErrorMessage;
 import org.example.common.exception.InvalidParamException;
 import org.example.infrastructure.user.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
@@ -31,7 +34,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new InvalidParamException(CustomErrorMessage.USER_FAIL_LOGIN));
 
-        if(!password.equals(user.getEncryptedPassword())) {
+        if (!passwordEncoder.matches(password, user.getEncryptedPassword())) {
             throw new InvalidParamException(CustomErrorMessage.USER_FAIL_LOGIN);
         }
 
@@ -43,7 +46,7 @@ public class UserServiceImpl implements UserService {
     public UserInfo.UserSignUp signUp(UserCommand.UserSignUp command) {
         checkAvailableUserId(command.getUserId());
         return UserInfo.UserSignUp
-                .of(userRepository.save(command.toEntity()).getId());
+                .of(userRepository.save(command.toEntity(passwordEncoder)).getId());
     }
 
     @Override
