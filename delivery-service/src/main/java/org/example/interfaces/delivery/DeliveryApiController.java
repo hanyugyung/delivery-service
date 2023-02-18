@@ -1,11 +1,14 @@
 package org.example.interfaces.delivery;
 
 import lombok.RequiredArgsConstructor;
+import org.example.common.auth.AccessUser;
 import org.example.common.exception.CustomErrorMessage;
 import org.example.common.exception.InvalidParamException;
 import org.example.domain.delivery.DeliveryService;
 import org.example.interfaces.CommonResponse;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,9 +30,8 @@ public class DeliveryApiController {
     public CommonResponse<DeliveryApiDto.GetDeliveriesResponse> getList(
             @RequestParam(name = "from", required = false
             ) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from
+            , @AuthenticationPrincipal AccessUser accessUser
     ) {
-        // TODO 인증된 사용자의 pk 로 변경
-        Long userId = 2L;
 
         ZonedDateTime limit = LocalDate.now().minusDays(2).atStartOfDay(ZoneId.systemDefault());
         ZonedDateTime before;
@@ -42,10 +44,9 @@ public class DeliveryApiController {
             }
         }
 
-
         DeliveryApiDto.GetDeliveriesResponse response =
                 DeliveryApiDto.GetDeliveriesResponse
-                        .of(deliveryService.getUserDeliveries(userId, before, ZonedDateTime.now()));
+                        .of(deliveryService.getUserDeliveries(accessUser.getId(), before, ZonedDateTime.now()));
         return CommonResponse.success(response);
     }
 }

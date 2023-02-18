@@ -25,7 +25,7 @@ class DeliveryRepositoryTest {
     @Test
     void 테스트_배달목록_조회() {
 
-        Long userId = 1L;
+        Long userId = 10L;
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime before = LocalDate.now().minusDays(2).atStartOfDay(ZoneId.systemDefault());
         Order order = new Order(userId, ZonedDateTime.now().minusDays(1));
