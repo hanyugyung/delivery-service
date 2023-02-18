@@ -1,8 +1,11 @@
 package org.example.interfaces.user;
 
+import org.example.domain.user.UserCommand;
+import org.example.domain.user.UserService;
 import org.example.interfaces.CommonResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,6 +27,9 @@ class UserApiControllerTest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private UserService userService;
+
     @BeforeEach
     void setUp() {
         client = WebTestClient.bindToServer()
@@ -43,7 +49,8 @@ class UserApiControllerTest {
 
         // when
         ParameterizedTypeReference<CommonResponse<UserApiDto.UserSignUpResponse>> ref
-                = new ParameterizedTypeReference<>() {};
+                = new ParameterizedTypeReference<>() {
+        };
 
         UserApiDto.UserSignUpResponse response = client.post()
                 .uri("/sing-up")
@@ -74,7 +81,8 @@ class UserApiControllerTest {
 
         // when, then
         ParameterizedTypeReference<CommonResponse<UserApiDto.UserSignUpResponse>> ref
-                = new ParameterizedTypeReference<>() {};
+                = new ParameterizedTypeReference<>() {
+        };
 
         CommonResponse response = client.post()
                 .uri("/sing-up")
@@ -91,12 +99,108 @@ class UserApiControllerTest {
         assertEquals(CommonResponse.Result.FAIL, response.getResult());
     }
 
+    @Test
+    void 테스트_사용자_로그인() {
+
+        // given
+        String userId = "userId" + UUID.randomUUID().toString().substring(0, 5);
+        String password = "User1234!@#$";
+        String userName = "userName";
+        userService.signUp(
+                new UserCommand.UserSignUp(userId, password, userName));
+        UserApiDto.UserLoginRequest request = getRequest(userId, password);
+
+        // when
+        ParameterizedTypeReference<CommonResponse<UserApiDto.UserLoginResponse>> ref
+                = new ParameterizedTypeReference<>() {
+        };
+
+        UserApiDto.UserLoginResponse response = client.post()
+                .uri("/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(ref)
+                .returnResult()
+                .getResponseBody()
+                .getData();
+
+        assertNotNull(response.getToken());
+    }
+
+    @Test
+    void 테스트_사용자_로그인_필수값_누락시_오류() {
+
+        // given
+        String userId = "userId" + UUID.randomUUID().toString().substring(0, 5);
+        String password = "User1234!@#$";
+        String userName = "userName";
+        userService.signUp(
+                new UserCommand.UserSignUp(userId, password, userName));
+        UserApiDto.UserLoginRequest request = getRequest(userId, "");
+
+        // when
+        ParameterizedTypeReference<CommonResponse<UserApiDto.UserLoginResponse>> ref
+                = new ParameterizedTypeReference<>() {
+        };
+
+        CommonResponse response = client.post()
+                .uri("/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody(ref)
+                .returnResult()
+                .getResponseBody();
+
+        assertEquals(CommonResponse.Result.FAIL, response.getResult());
+    }
+
+    @Test
+    void 테스트_비밀번호_불일치시_오류() {
+
+        // given
+        String userId = "userId" + UUID.randomUUID().toString().substring(0, 5);
+        String password = "User1234!@#$";
+        String userName = "userName";
+        userService.signUp(
+                new UserCommand.UserSignUp(userId, password, userName));
+        UserApiDto.UserLoginRequest request = getRequest(userId, "User111111!!!");
+
+        // when
+        ParameterizedTypeReference<CommonResponse<UserApiDto.UserLoginResponse>> ref
+                = new ParameterizedTypeReference<>() {
+        };
+
+        CommonResponse response = client.post()
+                .uri("/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody(ref)
+                .returnResult()
+                .getResponseBody();
+
+        assertEquals(CommonResponse.Result.FAIL, response.getResult());
+    }
+
     private UserApiDto.UserSignUpRequest getRequest(String userId, String password, String userName) {
         return UserApiDto.UserSignUpRequest
                 .builder()
                 .userId(userId)
                 .password(password)
                 .userName(userName)
+                .build();
+    }
+
+    private UserApiDto.UserLoginRequest getRequest(String userId, String password) {
+        return UserApiDto.UserLoginRequest
+                .builder()
+                .userId(userId)
+                .password(password)
                 .build();
     }
 }

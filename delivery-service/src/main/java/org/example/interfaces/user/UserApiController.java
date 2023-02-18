@@ -25,5 +25,12 @@ public class UserApiController {
         return CommonResponse.success(response);
     }
 
-
+    @PostMapping("/login")
+    public CommonResponse<UserApiDto.UserLoginResponse> login(
+            @RequestBody @Valid UserApiDto.UserLoginRequest request
+    ) {
+        UserApiDto.UserLoginResponse response =
+                UserApiDto.UserLoginResponse.of(userService.login(request.toCommand()));
+        return CommonResponse.success(response);
+    }
 }

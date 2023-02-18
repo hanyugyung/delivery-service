@@ -1,6 +1,8 @@
 package org.example.domain.delivery;
 
 import lombok.RequiredArgsConstructor;
+import org.example.common.exception.CustomErrorMessage;
+import org.example.common.exception.InvalidParamException;
 import org.example.infrastructure.delivery.DeliveryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,5 +23,17 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .stream()
                 .map(DeliveryInfo.GetDeliveries::of)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public DeliveryInfo.PatchDelivery patchDestination(Long id, Long userId, DeliveryCommand.PatchDelivery command) {
+
+        List<Delivery> result = deliveryRepository.getByIdAndUserId(id, userId);
+        if (result.isEmpty()) throw new InvalidParamException(CustomErrorMessage.DELIVERY_SEARCH_NO_INVALID);
+
+        Delivery one = result.get(0);
+        one.changeDestination(command.getDestination());
+        return DeliveryInfo.PatchDelivery.of(deliveryRepository.save(one));
     }
 }

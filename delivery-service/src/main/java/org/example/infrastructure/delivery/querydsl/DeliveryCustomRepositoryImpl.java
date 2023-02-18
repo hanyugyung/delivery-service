@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.example.domain.delivery.QDelivery.delivery;
 import static org.example.domain.delivery.QOrder.order;
@@ -19,7 +20,7 @@ public class DeliveryCustomRepositoryImpl implements DeliveryCustomRepository{
 
     @Override
     public List<Delivery> getUserDeliveries(Long userId, ZonedDateTime start, ZonedDateTime end) {
-        List<Delivery> result = queryFactory.select(delivery)
+        return queryFactory.select(delivery)
                 .distinct()
                 .from(delivery)
                 .leftJoin(delivery.order, order)
@@ -29,6 +30,15 @@ public class DeliveryCustomRepositoryImpl implements DeliveryCustomRepository{
                 .leftJoin(order.orderItemList, orderItem)
                 .fetchJoin()
                 .fetch();
-        return result;
+    }
+
+    @Override
+    public List<Delivery> getByIdAndUserId(Long id, Long userId) {
+        return queryFactory.select(delivery)
+                .join(order)
+                .where(delivery.id.eq(id)
+                        .and(delivery.order.userId.eq(userId)))
+                .orderBy(delivery.createdAt.desc())
+                .fetch();
     }
 }

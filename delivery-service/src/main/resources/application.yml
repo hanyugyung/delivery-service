@@ -10,3 +10,8 @@ spring:
         persistence:
           sharedCache:
             mode: ALL
+
+jwt:
+  secret-key: fadsdnfiew232938rfksl#$@#dsfsdnf
+  issuer: han
+  expired-time: 180000 # 3분
