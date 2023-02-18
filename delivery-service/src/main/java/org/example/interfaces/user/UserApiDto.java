@@ -49,4 +49,36 @@ public class UserApiDto {
             return new UserSignUpResponse(info.getId());
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserLoginRequest {
+        @NotBlank(message = "아이디는 필수 입력 값 입니다.")
+        private String userId;
+
+        @NotBlank(message = "비밀번호는 필수 입력 값 입니다.")
+        private String password;
+
+        public UserCommand.UserLogin toCommand() {
+            return UserCommand.UserLogin.builder()
+                    .userId(userId)
+                    .password(password)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserLoginResponse {
+
+        private String token;
+
+        public static UserLoginResponse of(UserInfo.UserLogin info) {
+            return new UserLoginResponse(info.getToken());
+        }
+    }
 }

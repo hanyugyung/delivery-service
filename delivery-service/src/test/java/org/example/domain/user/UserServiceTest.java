@@ -65,9 +65,8 @@ class UserServiceTest {
         String userId = "userId" + UUID.randomUUID().toString().substring(0, 5);
         String password = "User1234!@#$";
         String userName = "userName";
-        UserCommand.UserSignUp command
-                = new UserCommand.UserSignUp(userId, password, userName);
-        UserInfo.UserSignUp user = userService.signUp(command);
+        userService.signUp(
+                new UserCommand.UserSignUp(userId, password, userName));
 
         // when
         UserCommand.UserLogin commandLogin
