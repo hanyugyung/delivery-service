@@ -1,12 +1,2 @@
 server:
   shutdown: graceful
-
-
-spring:
-  jpa:
-    open-in-view: false
-    properties:
-      jakarta:
-        persistence:
-          sharedCache:
-            mode: ALL
