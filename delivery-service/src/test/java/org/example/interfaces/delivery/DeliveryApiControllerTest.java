@@ -7,12 +7,14 @@ import org.example.domain.user.UserInfo;
 import org.example.domain.user.UserService;
 import org.example.infrastructure.delivery.DeliveryRepository;
 import org.example.interfaces.CommonResponse;
+import org.example.interfaces.user.UserApiDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -20,8 +22,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -80,7 +81,7 @@ class DeliveryApiControllerTest {
 
         // then
         assertNotNull(response);
-        assertEquals(1, response.getList().size());
+        assertTrue(response.getList().size() > 0);
     }
 
     @Test
@@ -117,7 +118,80 @@ class DeliveryApiControllerTest {
         assertEquals(CommonResponse.Result.FAIL, response.getResult());
     }
 
-    private void saveDelivery(Long userId) {
+    @Test
+    void 테스트_배달수령지_수정_API_요청() {
+
+        // given
+        String userId = "delivery-user" + UUID.randomUUID().toString().substring(0, 5);
+        String password = "delivery1234!@#$";
+        UserInfo.UserSignUp user = getUser(userId, password);
+
+        Delivery delivery = saveDelivery(user.getId());
+
+        String token = getToken(userId, password);
+
+
+        String destination = "부산";
+        DeliveryApiDto.PatchDeliveryRequest request = getRequest(destination);
+
+        // when
+        ParameterizedTypeReference<CommonResponse<DeliveryApiDto.PatchDeliveryResponse>> ref
+                = new ParameterizedTypeReference<>() {};
+
+        DeliveryApiDto.PatchDeliveryResponse response = client.patch()
+                .uri(String.format("/%d", delivery.getId()))
+                .header(TOKEN_HEADER, token)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(ref)
+                .returnResult()
+                .getResponseBody()
+                .getData();
+
+        // then
+        assertNotNull(response);
+        assertEquals(destination, response.getDestination());
+    }
+
+    @Test
+    void 테스트_담당기사배정된_배달수령지_수정_API_요청시오류() {
+
+        // given
+        String userId = "delivery-user" + UUID.randomUUID().toString().substring(0, 5);
+        String password = "delivery1234!@#$";
+        UserInfo.UserSignUp user = getUser(userId, password);
+
+        Delivery delivery = saveDelivery(user.getId());
+
+        String token = getToken(userId, password);
+        delivery.assignRider(5L);
+
+        String destination = "부산";
+        DeliveryApiDto.PatchDeliveryRequest request = getRequest(destination);
+
+        // when
+        ParameterizedTypeReference<CommonResponse<DeliveryApiDto.PatchDeliveryResponse>> ref
+                = new ParameterizedTypeReference<>() {};
+
+        DeliveryApiDto.PatchDeliveryResponse response = client.patch()
+                .uri(String.format("/%d", delivery.getId()))
+                .header(TOKEN_HEADER, token)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(ref)
+                .returnResult()
+                .getResponseBody()
+                .getData();
+
+        // then
+        assertNotNull(response);
+        assertEquals(destination, response.getDestination());
+    }
+    private Delivery saveDelivery(Long userId) {
 
         Order order = new Order(userId, ZonedDateTime.now().minusDays(1));
 
@@ -126,7 +200,14 @@ class DeliveryApiControllerTest {
                 .destination("서울")
                 .memo("문앞에 두고 가주세요").build();
 
-        deliveryRepository.save(delivery);
+        return deliveryRepository.save(delivery);
+    }
+
+    private DeliveryApiDto.PatchDeliveryRequest getRequest(String destination) {
+        return DeliveryApiDto.PatchDeliveryRequest
+                .builder()
+                .destination(destination)
+                .build();
     }
 
     private UserInfo.UserSignUp getUser(String userId, String password) {

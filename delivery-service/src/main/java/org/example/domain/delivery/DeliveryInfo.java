@@ -51,5 +51,17 @@ public class DeliveryInfo {
         }
     }
 
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class PatchDelivery {
+        private Long id;
+        private String destination;
+
+        public static PatchDelivery of(Delivery delivery) {
+            return new PatchDelivery(delivery.getId(), delivery.getDestination());
+        }
+    }
+
 
 }

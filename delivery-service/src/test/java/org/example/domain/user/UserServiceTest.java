@@ -77,4 +77,22 @@ class UserServiceTest {
         assertNotNull(loginUser.getToken());
     }
 
+    @Test
+    void 테스트_사용자_로그인() {
+
+        // given
+        String userId = "userId" + UUID.randomUUID().toString().substring(0, 5);
+        String password = "User1234!@#$";
+        String userName = "userName";
+        userService.signUp(
+                new UserCommand.UserSignUp(userId, password, userName));
+
+        // when
+        UserCommand.UserLogin commandLogin
+                = new UserCommand.UserLogin(userId, password);
+        UserInfo.UserLogin loginUser = userService.login(commandLogin);
+
+        // then
+        assertNotNull(loginUser.getToken());
+    }
 }
