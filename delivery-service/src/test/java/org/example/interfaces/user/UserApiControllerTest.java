@@ -33,7 +33,7 @@ class UserApiControllerTest {
     @BeforeEach
     void setUp() {
         client = WebTestClient.bindToServer()
-                .baseUrl(String.format("http://localhost:%d/user", port))
+                .baseUrl(String.format("http://localhost:%d/api/users", port))
                 .build();
     }
 
