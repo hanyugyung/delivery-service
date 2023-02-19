@@ -20,18 +20,18 @@ public class JwtGenerator {
             , String userName
             , JwtConfigProperty jwtProperty) {
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("info", makeTokenInfo(id, userName)); // 토큰 내 사용자 정보
-
         Date iat = new Date();
         Date exp = new Date(iat.getTime() + jwtProperty.getExpiredTime());
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("info", makeTokenInfo(id, userName)); // 토큰 내 사용자 정보
+        claims.put("issuer", jwtProperty.getIssuer());
+        claims.put("iat", iat);
+        claims.put("exp", exp);
 
         return UserInfo.UserLogin.of(Jwts.builder()
                 .setHeaderParam("alg", "HS256")
                 .setHeaderParam("typ", "JWT")
-                .setIssuer(jwtProperty.getIssuer())
-                .setIssuedAt(iat)
-                .setExpiration(exp)
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS256, jwtProperty.getSecretKey())
                 .compact());

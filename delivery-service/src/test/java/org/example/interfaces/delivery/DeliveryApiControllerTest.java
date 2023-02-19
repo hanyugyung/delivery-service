@@ -44,7 +44,7 @@ class DeliveryApiControllerTest {
     void setUp() {
         client = WebTestClient.bindToServer()
                 .responseTimeout(Duration.ofSeconds(60))
-                .baseUrl(String.format("http://localhost:%d/deliveries", port))
+                .baseUrl(String.format("http://localhost:%d/api/deliveries", port))
                 .build();
     }
 
@@ -191,6 +191,30 @@ class DeliveryApiControllerTest {
         // then
         assertNotNull(response);
         assertEquals(destination, response.getDestination());
+    }
+
+    @Test
+    void 테스트_사용자의_주문_배달_목록_조회_API_요청시_토큰만료_오류() {
+
+        // given
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzY4MDg0MzgyMDIsImlhdCI6MTY3NjgwODI1ODIwMiwiaXNzdWVyIjoiaGFuIiwiaW5mbyI6eyJpZCI6MSwidXNlck5hbWUiOiJzdHJpbmciLCJyb2xlcyI6WyJ1c2VyIl19fQ.yXfRezLjGKpzFUkQ-NuW9Y0Y5m6gcmfTeO1kWSUwUlw";
+
+        // when
+        ParameterizedTypeReference<CommonResponse<DeliveryApiDto.GetDeliveriesResponse>> ref
+                = new ParameterizedTypeReference<>() {
+        };
+
+        CommonResponse response = client.get()
+                .uri("")
+                .header(TOKEN_HEADER, token)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectBody(ref)
+                .returnResult()
+                .getResponseBody();
+
+        // then
+        assertNotNull(response);
     }
 
     private Delivery saveDelivery(Long userId) {

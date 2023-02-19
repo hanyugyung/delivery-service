@@ -1,8 +1,11 @@
 package org.example.common.auth.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Date;
 
 @Slf4j
 public class JwtValidator {
@@ -12,10 +15,16 @@ public class JwtValidator {
         if(token == null) return null;
 
         try {
-            return Jwts.parser()
+            Claims claims = Jwts.parser()
                     .setSigningKey(key)
                     .parseClaimsJws(token)
                     .getBody();
+            Date exp = new Date((Long)claims.get("exp"));
+            if(exp.before(new Date())) {
+                throw new ExpiredJwtException(Jwts.header(), claims, "Token Expired");
+            }
+
+            return claims;
         } catch (Exception exception) {
             log.error("token parsing error!! e.message = {}", exception.getMessage());
         }

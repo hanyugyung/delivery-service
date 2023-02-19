@@ -37,16 +37,18 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring().requestMatchers(
-                "*/api-docs/**",
+                "/api-docs/**",
+                "/api-docs",
                 "/swagger-ui/**",
-                "/user/**"
+                "/favicon.ico",
+                "/api/users/**"
         );
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests()
-                .requestMatchers("/delivery").hasRole("ROLE_user")
+                .requestMatchers("/api/delivery").hasRole("ROLE_user")
                 .and()
                 .httpBasic().disable()
                 .formLogin().disable()
